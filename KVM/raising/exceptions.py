@@ -1,15 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-"""This script can be used locally on a KVM host machine to build KVM guests. The script requires 
-the user to enter certain variables into a configuration file. This configuration file will contain 
-the different guest types, paths to the custom configuration files and other settings one might 
-wish to use on the various KVM guests. """
-
+"""The functions are used to check exit states and raise exceptions. """
 
 """
-   Copyright (c) 2014, Are Hansen
+   Copyright (c) 2014, Are Hansen - Honeypot Development
 
    All rights reserved.
  
@@ -36,18 +28,18 @@ wish to use on the various KVM guests. """
 
 
 __author__ = 'Are Hansen'
-__date__ = '2013, December 9'
-__version__ = '1.0.6'
+__date__ = '2014, Oct 18'
+__version__ = '0.0.1'
 
 
-from KVM.script.builder import parse_args, check_args
+def check_true(tof):
+    """If check dont return true, raise an excception. """
+    if tof:
+        return True
+    else:
+        raise Exception('[ERROR]:')
 
 
-def main():
-    """Do what Main does best... """
-    args = parse_args()
-    check_args(args)
-
-
-if __name__ == '__main__':
-    main()
+def access_except(errmsg):
+    """Default access failure error. """
+    print('{0}'.format(errmsg))

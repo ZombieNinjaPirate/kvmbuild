@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-"""This script can be used locally on a KVM host machine to build KVM guests. The script requires 
-the user to enter certain variables into a configuration file. This configuration file will contain 
-the different guest types, paths to the custom configuration files and other settings one might 
-wish to use on the various KVM guests. """
+"""Thes functions can be called to verify various items in the KVM environment. """
 
 
 """
@@ -36,18 +29,26 @@ wish to use on the various KVM guests. """
 
 
 __author__ = 'Are Hansen'
-__date__ = '2013, December 9'
-__version__ = '1.0.6'
+__date__ = '2014, October 26'
+__version__ = '0.0.1'
 
 
-from KVM.script.builder import parse_args, check_args
+import sys
+try:
+    import libvirt
+except ImportError:
+    print 'ERROR: python-libvirt could not be found!'
+    print 'Install with: sudo apt-get install python-libvirt'
+    sys.exit(1) 
 
 
-def main():
-    """Do what Main does best... """
-    args = parse_args()
-    check_args(args)
+def gname(kvm_guest):
+    """Make sure there are no other KVM guests with the same name. """
+    conn = libvirt.open("qemu:///system")
+    kvm_list = conn.listDefinedDomains()
 
+    if kvm_guest in kvm_list:
+        print '[ERROR]: There is already a KVM called {0}!'.format(kvm_guest)
+        sys.exit(1)
 
-if __name__ == '__main__':
-    main()
+    return kvm_guest

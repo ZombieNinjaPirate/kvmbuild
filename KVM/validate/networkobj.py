@@ -1,15 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-"""This script can be used locally on a KVM host machine to build KVM guests. The script requires 
-the user to enter certain variables into a configuration file. This configuration file will contain 
-the different guest types, paths to the custom configuration files and other settings one might 
-wish to use on the various KVM guests. """
+"""This module contain functions that can be used to validate different types of network related
+objects such as MAC and IPv4 addresses. """
 
 
 """
-   Copyright (c) 2014, Are Hansen
+   Copyright (c) 2014, Are Hansen - Honeypot Development
 
    All rights reserved.
  
@@ -34,20 +28,37 @@ wish to use on the various KVM guests. """
    THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
 __author__ = 'Are Hansen'
-__date__ = '2013, December 9'
-__version__ = '1.0.6'
+__date__ = '2014, Oct 11'
+__version__ = '0.0.3'
 
 
-from KVM.script.builder import parse_args, check_args
+import ipaddr
+import re
+import sys
+from netaddr import IPAddress
+from netaddr.core import AddrFormatError
 
 
-def main():
-    """Do what Main does best... """
-    args = parse_args()
-    check_args(args)
+def check_mac(macadd):
+    """Check for valid MAC address. """
+    while True:
+        if not re.match("[0-9a-f]{2}([-:])[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", macadd.lower()):
+            print 'MAC address "{0}" is not valid!'.format(macadd)
+            macadd = raw_input('- MAC: ')
+
+        if re.match("[0-9a-f]{2}([-:])[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", macadd.lower()):
+            break
+
+    return macadd
 
 
-if __name__ == '__main__':
-    main()
+def check_ipv4(ipv4):
+    """Checks if the ipv4 string object is a valid IPv4 address. Calls sys.exit(1) if invalid. """
+    try:
+        IPAddress(ipv4)
+    except AddrFormatError:
+        print '[ERROR]: {0} is not a valid IPv4 address!'.format(ipv4)
+        sys.exit(1)
+
+    return ipv4
